@@ -1,6 +1,7 @@
 const express=require('express');
 const app=express();
 
+
 const persons=[
     { 
       "id": 1,
@@ -23,7 +24,7 @@ const persons=[
       "number": "39-23-6423122"
     }
 ]
-
+app.use(express.json())
 // 
 app.get('/api/persons',(request,response)=>{
     response.json(persons)
@@ -51,7 +52,14 @@ app.delete('/api/persons/:id',(request,response)=>{
 })
 
 app.post('/api/persons',(request,response)=>{
-    const {body}=request;
+    const body = request.body
+    // console.log(body);
+    // console.log(request);
+    if(!body){
+        return response.status(400).json({
+            error:'content missing'
+        })
+    }
     const{name,number}=body;
     if(!name || !number){
         return response.status(400).json({
