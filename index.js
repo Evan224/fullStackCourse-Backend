@@ -2,10 +2,24 @@ const express=require('express');
 const app=express();
 const morgan=require('morgan');
 
-app.use(morgan('tiny'));
+// app.use(morgan('tiny'));
+morgan.token('body',(res,req)=>{
+    return JSON.stringify(res.body);
+})
+app.use(morgan(':method :url :status :total-time - :response-time ms :body'))
 
+// const configMorgan=morgan((tokens,req,res)=>{
+//     return [
+//       tokens.method(req, res),
+//       tokens.url(req, res),
+//       tokens.status(req, res),
+//       tokens.res(req, res, 'content-length'), '-',
+//       tokens['response-time'](req, res), 'ms',
+//     ].join(' ')
+//   })
 
-const persons=[
+// app.use(configMorgan)
+let persons=[
     { 
       "id": 1,
       "name": "Arto Hellas", 
