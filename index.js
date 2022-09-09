@@ -53,6 +53,16 @@ app.delete('/api/persons/:id',(request,response)=>{
 app.post('/api/persons',(request,response)=>{
     const {body}=request;
     const{name,number}=body;
+    if(!name || !number){
+        return response.status(400).json({
+            error:'No name or number!'
+        })
+    }
+    if(persons.find(p=>p.name===name)){
+        return response.status(400).json({
+            error:'Already has a name!'
+        })
+    }
     const newPerson={
         id:Math.floor(Math.random()*1000),
         name,
