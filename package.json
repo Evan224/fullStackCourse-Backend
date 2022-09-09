@@ -1,0 +1,26 @@
+{
+  "name": "fullstackcourse-backend",
+  "version": "1.0.0",
+  "description": "This is the server for fullStackCourse Assignment",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "serve": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Evan224/fullStackCourse-Backend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Evan224/fullStackCourse-Backend/issues"
+  },
+  "homepage": "https://github.com/Evan224/fullStackCourse-Backend#readme",
+  "dependencies": {
+    "express": "^4.18.1",
+    "nodemon": "^2.0.19"
+  }
+}
