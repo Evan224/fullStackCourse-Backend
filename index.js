@@ -1,24 +1,16 @@
 const express=require('express');
+const cors=require('cors');
 const app=express();
 const morgan=require('morgan');
 
+
 // app.use(morgan('tiny'));
+app.use(cors());
 morgan.token('body',(res,req)=>{
     return JSON.stringify(res.body);
 })
 app.use(morgan(':method :url :status :total-time - :response-time ms :body'))
 
-// const configMorgan=morgan((tokens,req,res)=>{
-//     return [
-//       tokens.method(req, res),
-//       tokens.url(req, res),
-//       tokens.status(req, res),
-//       tokens.res(req, res, 'content-length'), '-',
-//       tokens['response-time'](req, res), 'ms',
-//     ].join(' ')
-//   })
-
-// app.use(configMorgan)
 let persons=[
     { 
       "id": 1,
@@ -42,11 +34,10 @@ let persons=[
     }
 ]
 app.use(express.json())
-// 
+ 
 app.get('/api/persons',(request,response)=>{
     response.json(persons)
 })
-
 app.get('/info',(request,response)=>{
     response.send(`<p>Phonebook has info for ${persons.length} 
     people</p><p>${new Date()}</p>`)
@@ -97,7 +88,17 @@ app.post('/api/persons',(request,response)=>{
     return response.json(newPerson);
 })
 
-const PORT=3001;
+app.put('/api/persons/:id',(request,response)=>{
+    const id=Number(request.params.id)
+    const body=request.body
+    const person=persons.find(p=>p.id===id)
+    const newPerson={...person,number:body.number}
+    persons=persons.map(p=>p.id!==id?p:newPerson)
+    response.json(newPerson)
+}
+)
+
+const PORT=process.env.PORT||3001;
 app.listen(PORT,()=>{
     console.log(`Server running on port ${PORT}`)
 })

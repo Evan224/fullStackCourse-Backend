@@ -6,7 +6,11 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
-    "serve": "nodemon index.js"
+    "serve": "nodemon index.js",
+    "build:ui": "rm -rf build && cd ../part2-notes/ && npm run build && cp -r build ../notes-backend",
+    "deploy": "fly deploy",
+    "deploy:full": "npm run build:ui && npm run deploy",
+    "logs:prod": "fly logs"
   },
   "repository": {
     "type": "git",
@@ -20,8 +24,13 @@
   },
   "homepage": "https://github.com/Evan224/fullStackCourse-Backend#readme",
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.18.1",
     "morgan": "^1.10.0",
     "nodemon": "^2.0.19"
-  }
+  },
+  "resolutions": {
+    "mini-css-extract-plugin": "2.4.5"
+  },
+  "proxy": "http://localhost:3001"
 }
