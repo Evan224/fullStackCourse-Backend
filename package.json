@@ -21,6 +21,7 @@
   "homepage": "https://github.com/Evan224/fullStackCourse-Backend#readme",
   "dependencies": {
     "express": "^4.18.1",
+    "morgan": "^1.10.0",
     "nodemon": "^2.0.19"
   }
 }
