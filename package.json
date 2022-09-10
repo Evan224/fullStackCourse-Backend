@@ -10,7 +10,8 @@
     "build:ui": "rm -rf build && cd ../part2-notes/ && npm run build && cp -r build ../notes-backend",
     "deploy": "fly deploy",
     "deploy:full": "npm run build:ui && npm run deploy",
-    "logs:prod": "fly logs"
+    "logs:prod": "fly logs",
+    "lint": "eslint ."
   },
   "repository": {
     "type": "git",
@@ -34,5 +35,8 @@
   "resolutions": {
     "mini-css-extract-plugin": "2.4.5"
   },
-  "proxy": "http://localhost:3001"
+  "proxy": "http://localhost:3001",
+  "devDependencies": {
+    "eslint": "^8.23.0"
+  }
 }
