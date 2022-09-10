@@ -38,23 +38,9 @@ app.use(morgan(':method :url :status :total-time - :response-time ms :body'))
 // ]
 app.use(express.json())
 
-const unknownEndpoint=(request,response)=>{
-    response.status(404).send({error:'unknown endpoint'})
-}
 
-app.use(unknownEndpoint);
 
-const errorHandler=(error,request,response,next)=>{
-    console.log(error.message);
-    if(error.name==='CastError'){
-        return response.status(400).send({error:'malformatted id'})
-    }else if(error.name==='ValidationError'){
-        return response.status(400).json({error:error.message})
-    }
-    next(error);
-}
 
-app.use(errorHandler);
  
 app.get('/api/persons',(request,response,next)=>{
     PersonModel.find({}).then(persons=>{
@@ -63,7 +49,7 @@ app.get('/api/persons',(request,response,next)=>{
         next(error);
     })
 })
-app.get('/info',(request,response)=>{
+app.get('/info',(request,response,next)=>{
     PersonModel.find({}).then(persons=>{
         response.send(`<p>Phonebook has info for ${persons.length} people</p><p>${new Date()}</p>`);
     }).catch(error=>{
@@ -71,7 +57,7 @@ app.get('/info',(request,response)=>{
     })
 })
 
-app.get('/api/persons/:id',(request,response)=>{
+app.get('/api/persons/:id',(request,response,next)=>{
     const id=request.params.id;
     // const id="631b96ea2bd5f84a7f8fb238"
     PersonModel.findById(id).then(person=>{
@@ -85,7 +71,7 @@ app.get('/api/persons/:id',(request,response)=>{
     })
 })
 
-app.delete('/api/persons/:id',(request,response)=>{
+app.delete('/api/persons/:id',(request,response,next)=>{
     const id=request.params.id;
     PersonModel.findByIdAndRemove(id).then(result=>{
         response.status(204).end();
@@ -94,7 +80,7 @@ app.delete('/api/persons/:id',(request,response)=>{
     })
 })
 
-app.post('/api/persons',async (request,response)=>{
+app.post('/api/persons',async (request,response,next)=>{
     const body = request.body
     // console.log(body);
     // console.log(request);
@@ -107,18 +93,18 @@ app.post('/api/persons',async (request,response)=>{
     console.log(
         name,number 
     )
-    if(!name || !number){
-        return response.status(400).json({
-            error:'No name or number!'
-        })
-    }
-    const test=await PersonModel.find({}).where('name').equals(name);
-    console.log(test,"test-----------");
-    if(test.length>0){
-        return response.status(400).json({
-            error:'Already has a name!'
-        })
-    }
+    // if(!name || !number){
+    //     return response.status(400).json({
+    //         error:'No name or number!'
+    //     })
+    // }
+    // const test=await PersonModel.find({}).where('name').equals(name);
+    // console.log(test,"test-----------");
+    // if(test.length>0){
+    //     return response.status(400).json({
+    //         error:'Already has a name!'
+    //     })
+    // }
     const newPerson={
         name,
         number
@@ -127,21 +113,40 @@ app.post('/api/persons',async (request,response)=>{
     PersonModel.create(newPerson).then(person=>{
         response.json(person);
     }).catch(error=>{
+        console.log('passon')
         next(error);
     })
 })
 
-app.put('/api/persons/:id',(request,response)=>{
+app.put('/api/persons/:id',(request,response,next)=>{
     const id=request.params.id
     const body=request.body;
     const {name,number}=body;
-    PersonModel.findByIdAndUpdate(id,{number},{new:true}).then(updatedPerson=>{
+    PersonModel.findByIdAndUpdate(id,{number},{new:true,runValidators:true,context:"query"}).then(updatedPerson=>{
         console.log(updatedPerson);
         response.json(updatedPerson);
     }).catch(error=>{
         next(error);
     })
 })
+
+const errorHandler=(error,request,response,next)=>{
+    console.log(error.message);
+    if(error.name==='CastError'){
+        return response.status(400).send({error:'malformatted id'})
+    }else if(error.name==='ValidationError'){
+        return response.status(400).json({error:error.message})
+    }
+    next(error);
+}
+app.use(errorHandler);
+
+const unknownEndpoint=(request,response)=>{
+    response.status(404).send({error:'unknown endpoint'})
+}
+
+app.use(unknownEndpoint);
+
 
 const PORT=process.env.PORT||3001;
 app.listen(PORT,()=>{
