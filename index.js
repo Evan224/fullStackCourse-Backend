@@ -122,7 +122,6 @@ app.put('/api/persons/:id',(request,response)=>{
     const {name,number}=body;
     PersonModel.findByIdAndUpdate(id,{number},{new:true}).then(updatedPerson=>{
         console.log(updatedPerson);
-
         response.json(updatedPerson);
     }).catch(error=>{
         console.log(error,'error');
