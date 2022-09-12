@@ -13,7 +13,20 @@ const totalLikes = (blogs) => {
         : blogs.reduce(reducer, 0)
 }
 
+const favoriteBlog = (blogs) => {
+    let curObj;
+    let curLikes = 0;
+    Object.values(blogs).forEach((obj) => {
+        if (obj.likes > curLikes) {
+            curObj = obj;
+            curLikes = obj.likes;
+        }
+    });
+    return curObj;
+}
+
 module.exports = {
     dummy,
-    totalLikes
+    totalLikes,
+    favoriteBlog
 }
