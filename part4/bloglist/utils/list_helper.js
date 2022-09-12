@@ -25,8 +25,55 @@ const favoriteBlog = (blogs) => {
     return curObj;
 }
 
+const mostBloger = (blogs) => {
+    let obj={};
+    Object.values(blogs).forEach((blog) => {
+        // Object.keys(obj).includes(blog.author)
+        if (!Object.keys(obj).includes(blog.author)) {
+            obj[blog.author] = 1;
+        } else {
+            obj[blog.author] += 1;
+        }
+    })
+    let curBlog=0,currentAuthor;
+    Object.keys(obj).forEach((item) => {
+        if(obj[item]>curBlog){
+            curBlog=obj[item];
+            currentAuthor=item;
+        }
+    })
+    console.log(currentAuthor,'---------',curBlog);
+    return {author:currentAuthor,blogs:curBlog};
+    
+}
+
+const mostBlogerLikes = (blogs) => {
+    let obj={};
+    Object.values(blogs).forEach((blog) => {
+        // Object.keys(obj).includes(blog.author)
+        if (!Object.keys(obj).includes(blog.author)) {
+            obj[blog.author] = 1;
+        } else {
+            obj[blog.author] += 1;
+        }
+    })
+    let curBlog=0,currentAuthor;
+    Object.keys(obj).forEach((item) => {
+        if(obj[item]>curBlog){
+            curBlog=obj[item];
+            currentAuthor=item;
+        }
+    })
+    const likes=blogs.filter((blog)=>blog.author===currentAuthor).reduce((sum,item)=>sum+item.likes,0);
+    // console.log(currentAuthor,'---------',curBlog);
+    return {author:currentAuthor,likes};
+    
+}
+
 module.exports = {
     dummy,
     totalLikes,
-    favoriteBlog
+    favoriteBlog,
+    mostBloger,
+    mostBlogerLikes,
 }
