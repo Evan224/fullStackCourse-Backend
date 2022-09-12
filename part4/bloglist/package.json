@@ -1,0 +1,42 @@
+{
+  "name": "bloglist",
+  "version": "1.0.0",
+  "description": "blog list",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "serve": "nodemon index.js",
+    "build:ui": "rm -rf build && cd ../part2-notes/ && npm run build && cp -r build ../notes-backend",
+    "deploy": "fly deploy",
+    "deploy:full": "npm run build:ui && npm run deploy",
+    "logs:prod": "fly logs",
+    "lint": "eslint ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Evan224/fullStackCourse-Backend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Evan224/fullStackCourse-Backend/issues"
+  },
+  "homepage": "https://github.com/Evan224/fullStackCourse-Backend#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.2",
+    "express": "^4.18.1",
+    "mongoose": "^6.6.0",
+    "morgan": "^1.10.0",
+    "nodemon": "^2.0.19"
+  },
+  "resolutions": {
+    "mini-css-extract-plugin": "2.4.5"
+  },
+  "proxy": "http://localhost:3001",
+  "devDependencies": {
+    "eslint": "^8.23.0"
+  }
+}
