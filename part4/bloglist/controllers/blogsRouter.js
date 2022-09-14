@@ -23,14 +23,17 @@ blogsRouter.get('/',async (request,response) => {
 blogsRouter.post('/',async (request,response) => {
          const blog = new Blog(request.body)
         //  console.log(blog)
-        
-        const token = request.token
-        console.log(token,'12312312');
-        const decodedToken = jwt.verify(token, process.env.SECRET)
-        if (!decodedToken.id) {
-          return response.status(401).json({ error: 'token missing or invalid' })
-        }
-        const user = await User.findById(decodedToken.id)
+    
+        let user=request.user
+        // const token = request.token
+        // console.log(token,'12312312');
+        // const decodedToken = jwt.verify(token, process.env.SECRET)
+        // if (!decodedToken.id) {
+        //   return response.status(401).json({ error: 'token missing or invalid' })
+        // }
+        user=await User.findById(user.id)
+        // const user = await User.findById(decodedToken.id)
+        console.log(user,'12321321useruseruser')
         if(!blog.likes){
             blog.likes=0
         }
@@ -55,16 +58,16 @@ blogsRouter.post('/',async (request,response) => {
 
 blogsRouter.delete('/:id',async (request,response) => {
 
-    const token = request.token
-    const decodedUser = jwt.verify(token, process.env.SECRET)
-    if(!decodedUser||!decodedUser.id){
-        return response.status(401).json({error:'token invalid'})
-    }
+    const user=request.user
+    // if(!decodedUser||!decodedUser.id){
+    //     return response.status(401).json({error:'token invalid'})
+    // }
+    // const user=request.user;
     const blog=await Blog.findById(request.params.id)
-    console.log(blog,'---------------------')
-    if(blog.user._id.toString()===decodedUser.id.toString()){
+    console.log(user,'---------------------',blog)
+    if(blog.user.id.toString()===user._id.toString()){
         await Blog.findByIdAndRemove(request.params.id)
-        response.status(204).end()
+        response.status(204).json({message:'delete success'})
     }else{
         response.status(401).json({error:'no permission to delete'}) 
     }
