@@ -1,4 +1,4 @@
-const Blog=require('../models/blogModel')
+const Blog=require('User/blogModel')
 const initialBlogs=[
     {
         title: "React patterns",
