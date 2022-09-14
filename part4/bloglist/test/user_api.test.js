@@ -43,11 +43,13 @@ describe("test the REST api ",()=>{
             name:'Evan2',
             password:'Evanpassword2'
         }
-        await api
+        const res1=await api
             .post('/api/users')
             .send(newUser)
             .expect(400)
             .expect('Content-Type',/application\/json/)
+
+        expect(res1.body.error).toContain('there is already a user')
         
         await api
             .post('/api/users')
@@ -57,6 +59,39 @@ describe("test the REST api ",()=>{
         const usersAtEnd=await userModel.find({})
         expect(usersAtEnd).toHaveLength(usersAtStart.length)
     })
+
+    test("test the username and password length",async()=>{
+        const usersAtStart=await userModel.find({})
+
+            const newUser={
+                username:'Evasd',
+                name:'Evan',
+                password:'Ev'
+            }
+            const result=await api
+            .post('/api/users')
+            .send(newUser)
+            .expect(400)
+
+        expect(result.body.error)
+        .toEqual('password must be at least 3 characters long')
+        const usersAtEnd=await userModel.find({})
+        expect(usersAtEnd).toHaveLength(usersAtStart.length)
+        const newUser2={
+            username:'Ev',
+            name:'Evan',
+            password:'Evanpassword'
+        }
+        
+        const res2=await api
+            .post('/api/users')
+            .send(newUser2)
+            .expect(400)
+        expect(res2.body.error).toEqual("username must be at least 3 characters long")
+        
+    })
+
+
 })
 
 afterAll(() => {
