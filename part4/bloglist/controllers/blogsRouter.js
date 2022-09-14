@@ -1,9 +1,10 @@
 const blogsRouter=require('express').Router()
-const blogModel=require('../models/blogModel')
+const Blog=require('../models/blogModel')
+const User=require('../models/userModel')
 
 blogsRouter.get('/',async (request,response) => {
     try{
-        const blogs=await blogModel.find({})
+        const blogs=await Blog.find({})
         response.json(blogs)
     }catch(exception){
         next(exception)
@@ -11,27 +12,36 @@ blogsRouter.get('/',async (request,response) => {
 })
 
 blogsRouter.post('/',async (request,response) => {
-    try{
-         const blog = new blogModel(request.body)
+         const blog = new Blog(request.body)
         //  console.log(blog)
+        const body=request.body
+        const user=await User.findById(body.userId)
+        // console.log(user,'12321321312')
         if(!blog.likes){
             blog.likes=0
         }
          if(!blog.title||!blog.url){
                response.status(400).end()
          }else{
-              const result=await blog.save()
-              response.status(201).json(result)
+            blog.user={
+                id:user._id,
+                username:user.username,
+                name:user.name
+            }
+                const savedBlog=await blog.save()
+                user.blogs=user.blogs.concat(savedBlog._id)
+              await user.save()
+              response.status(201).json(savedBlog)
          }
-    }catch(exception){
-        next(exception)
-    }
+
+         
+    
 
 })
 
 blogsRouter.delete('/:id',async (request,response) => {
     try{
-        await blogModel.findByIdAndRemove(request.params.id)
+        await Blog.findByIdAndRemove(request.params.id)
         response.status(204).end()
     }catch(exception){
         next(exception)
@@ -40,14 +50,14 @@ blogsRouter.delete('/:id',async (request,response) => {
 
 blogsRouter.put('/:id',async (request,response) => {
     try{
-        const blog = new blogModel(request.body)
+        const blog = new Blog(request.body)
         const newBlog={
             title:blog.title,
             author:blog.author,
             url:blog.url,
             likes:blog.likes,
         }
-        const result=await blogModel.findByIdAndUpdate(request.params.id,newBlog,{new:true})
+        const result=await Blog.findByIdAndUpdate(request.params.id,newBlog,{new:true})
         response.status(201).json(result)
     }catch(exception){
         next(exception)

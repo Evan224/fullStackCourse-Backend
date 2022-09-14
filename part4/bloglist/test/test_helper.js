@@ -1,4 +1,4 @@
-const blogModel=require('../models/blogModel')
+const Blog=require('../models/blogModel')
 const initialBlogs=[
     {
         title: "React patterns",
@@ -29,7 +29,7 @@ const initialBlogs=[
 ]
 
 const nonExistingId = async () => {
-    const blog = new blogModel({ title: 'willremovethissoon' })
+    const blog = new Blog({ title: 'willremovethissoon' })
     await blog.save()
     await blog.remove()
   
@@ -37,7 +37,7 @@ const nonExistingId = async () => {
 }
 
 const blogInDb=async()=>{
-    const blogs=await blogModel.find({})
+    const blogs=await Blog.find({})
     return blogs.map(blog=>blog.toJSON())
 }
 

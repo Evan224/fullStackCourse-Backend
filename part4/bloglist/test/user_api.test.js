@@ -1,5 +1,5 @@
 const bcrpt=require('bcrypt')
-const userModel=require('../models/user')
+const User=require('../models/userModel')
 const supertest=require('supertest')
 const app=require('../app')
 const api=supertest(app)
@@ -7,14 +7,14 @@ const mongoose = require('mongoose')
 
 describe("test the REST api ",()=>{
     beforeEach(async()=>{
-        await userModel.deleteMany({})
+        await User.deleteMany({})
         const passwordHash=await bcrpt.hash('Evanpassword',10)
-        const user=new userModel({username:'same',passwordHash})
+        const user=new User({username:'same',passwordHash})
         await user.save()
     },100000)
 
     test("test the user creation post",async()=>{
-        const usersAtStart=await userModel.find({})
+        const usersAtStart=await User.find({})
         const newUser={
             username:'Evan',
             name:'Evan',
@@ -25,14 +25,14 @@ describe("test the REST api ",()=>{
             .send(newUser)
             .expect(201)
             .expect('Content-Type',/application\/json/)
-        const usersAtEnd=await userModel.find({})
+        const usersAtEnd=await User.find({})
         expect(usersAtEnd).toHaveLength(usersAtStart.length+1)
         const usernames=usersAtEnd.map(u=>u.username)
         expect(usernames).toContain(newUser.username)
     })
 
     test("test the user creation with already-have username",async()=>{
-        const usersAtStart=await userModel.find({})
+        const usersAtStart=await User.find({})
         const newUser={
             username:'same',
             name:'Evan',
@@ -56,12 +56,12 @@ describe("test the REST api ",()=>{
             .send(sameUser)
             .expect(400)
         
-        const usersAtEnd=await userModel.find({})
+        const usersAtEnd=await User.find({})
         expect(usersAtEnd).toHaveLength(usersAtStart.length)
     })
 
     test("test the username and password length",async()=>{
-        const usersAtStart=await userModel.find({})
+        const usersAtStart=await User.find({})
 
             const newUser={
                 username:'Evasd',
@@ -75,7 +75,7 @@ describe("test the REST api ",()=>{
 
         expect(result.body.error)
         .toEqual('password must be at least 3 characters long')
-        const usersAtEnd=await userModel.find({})
+        const usersAtEnd=await User.find({})
         expect(usersAtEnd).toHaveLength(usersAtStart.length)
         const newUser2={
             username:'Ev',

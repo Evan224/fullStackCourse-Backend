@@ -1,15 +1,15 @@
 const usersRouter=require('express').Router()
-const userModel=require('../models/user')
+const User=require('../models/userModel')
 const bcrypt=require('bcrypt')
 
 usersRouter.get('/',async (request,response) => {
-        const users=await userModel.find({})
+        const users=await User.find({}).populate('blogs')
         response.status(200).json(users)
 })
 
 usersRouter.post('/',async (request,response) => {
     const body=request.body
-    const exisenceUser=await userModel.findOne({username:body.username});
+    const exisenceUser=await User.findOne({username:body.username});
     // await console.log(body,'12312321321312')
     if(exisenceUser){
         return response.status(400).json({error:'there is already a user'})
@@ -22,7 +22,7 @@ usersRouter.post('/',async (request,response) => {
     }
     const saltRounds=10
     const passwordHash=await bcrypt.hash(body.password,saltRounds)
-    const user=new userModel({
+    const user=new User({
         username:body.username,
         name:body.name,
         passwordHash

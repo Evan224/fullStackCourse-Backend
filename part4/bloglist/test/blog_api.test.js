@@ -2,13 +2,13 @@ const mongoose=require('mongoose')
 const supertest=require('supertest')
 const app=require('../app')
 const api=supertest(app)
-const blogModel=require('../models/blogModel')
+const Blog=require('../models/blogModel')
 const {initialBlogs,nonExistingId,blogInDb}=require('./test_helper')
 
 
 beforeEach(async()=>{
-    await blogModel.deleteMany({})
-    await blogModel.insertMany(initialBlogs)
+    await Blog.deleteMany({})
+    await Blog.insertMany(initialBlogs)
 })
 
 describe("test the property of blogs",()=>{
@@ -17,7 +17,7 @@ describe("test the property of blogs",()=>{
             title: "React patterns4",
             author: "Michael Chan",
             url: "https://reactpatterns.com/",
-            likes: 7232
+            likes: 7232,
         }
         await api
             .post('/api/blogs')
